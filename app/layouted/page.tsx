@@ -1,15 +1,16 @@
 import React from 'react';
-import TextLayout from '@/components/TextLayout';
+import TextLayoutClient from './TextLayoutClient';
 import styles from './page.module.scss';
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 interface LayoutPageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
+  // Next.js 15 以降、searchParams は Promise として渡される
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default function LayoutPage({ searchParams }: LayoutPageProps) {
-  const text = searchParams.text;
+export default async function LayoutPage({ searchParams }: LayoutPageProps) {
+  const { text } = await searchParams;
 
   if (!text || typeof text !== 'string') {
     return (
@@ -23,7 +24,7 @@ export default function LayoutPage({ searchParams }: LayoutPageProps) {
   return (
     <div className={styles.layoutContainer}>
       <h1 className={styles.title}>✨Looks good?</h1>
-      <TextLayout text={text} />
+      <TextLayoutClient text={text} />
       <div className="text-center">
         <Link href="/" aria-label='もう一度試す（retry）' className={styles.retryBtn}>
           <Button>
