@@ -10,6 +10,15 @@ import gsap from "gsap";
 import HeroImg from "../../public/images/text-layout-system.webp";
 import UsageImg from "../../public/images/usage.webp";
 
+// Rendered width of the full-width images on this page (w-full inside the container):
+// - <= 600px: viewport - main.main padding (24px x2) - .pageContainer padding (16px x2) - px-4 (16px x2)
+// - >  600px: viewport - main.main padding (80px x2) - 32px - 32px, capped by max-w-2xl (672px) - px-4 = 640px
+// Without `sizes`, next/image emits a 1x/2x srcset (640w/1920w) and DPR>1 phones download the 1920w variant.
+// The images are h-auto, so their height follows the natural ratio of whichever variant is chosen; smaller
+// variants have rounded heights (e.g. 384x202), so `aspect-[1200/630]` pins the box to the source ratio.
+const CONTENT_IMAGE_SIZES =
+  "(max-width: 600px) calc(100vw - 112px), (max-width: 864px) calc(100vw - 224px), 640px";
+
 export default function AboutPage() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -58,7 +67,8 @@ export default function AboutPage() {
           alt="Hero image"
           width={640}
           height={360}
-          className="rounded-lg w-full h-auto object-cover animate-slide"
+          sizes={CONTENT_IMAGE_SIZES}
+          className="rounded-lg w-full h-auto aspect-[1200/630] object-cover animate-slide"
           priority
           draggable={false}
           loading="eager"
@@ -122,7 +132,8 @@ export default function AboutPage() {
             alt="Auto text layout system"
             width={640}
             height={360}
-            className="rounded-lg w-full h-auto object-cover animate-slide"
+            sizes={CONTENT_IMAGE_SIZES}
+            className="rounded-lg w-full h-auto aspect-[1200/630] object-cover animate-slide"
             draggable={false}
             loading="lazy"
           />
